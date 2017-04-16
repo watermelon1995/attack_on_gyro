@@ -19,54 +19,28 @@ import com.badlogic.gdx.physics.box2d.World;
 
 public class AttackOnGyro extends ApplicationAdapter {
 	SpriteBatch batch;
-	Sprite sprite;
-	Texture img;
-    World world;
+	World world;
 	BitmapFont bitmapFont;
-    Body body;
 
+    Gyro gyro;
+    Gyro gyro2;
 
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
-		img = new Texture("badlogic.jpg");
-        sprite = new Sprite(img);
-        sprite.setScale(0.5f, 0.5f);
-
-        //Set position to the middle of the screen
-        sprite.setPosition(Gdx.graphics.getWidth()/2 - sprite.getWidth()/2,
-                            Gdx.graphics.getHeight()/2 );
         //World is the heart of the physics
         world = new World(new Vector2(0f,0f),true);
 
-        BodyDef bodyDef = new BodyDef();
-        bodyDef.type = BodyDef.BodyType.DynamicBody;
 
+        gyro = new Gyro("top2.jpg");
+        gyro.create(100, 100, world);
 
-        bodyDef.position.set(sprite.getX(), sprite.getY());
-        //Apply the body defination to our body
-        body = world.createBody(bodyDef);
-        body.setAngularVelocity(25f);
-
-        //Define the shape
-        PolygonShape shape = new PolygonShape();
-        shape.setAsBox(sprite.getWidth()/2, sprite.getHeight()/2);
-
-        //Create a fixture defination to applt to our body
-        FixtureDef fixtureDef = new FixtureDef();
-        //Can define other physics properites
-        fixtureDef.shape = shape;
-        fixtureDef.density = 1f;
-
-        Fixture fixture = body.createFixture(fixtureDef);
-
-
-
+        gyro2 = new Gyro("top2.jpg");
+        gyro2.create(Gdx.graphics.getWidth()/2 ,
+                Gdx.graphics.getHeight()/2, world);
 
         bitmapFont = new BitmapFont();
         bitmapFont.getData().setScale(3.0f, 3.0f);
-        //Shape can dispose
-        shape.dispose();
 	}
 
 	public  static  float convertRadToDeg(float radian){
@@ -78,14 +52,17 @@ public class AttackOnGyro extends ApplicationAdapter {
 
         world.step(Gdx.graphics.getDeltaTime(),6,2);
         //Update sprite position
-        sprite.setPosition(body.getPosition().x, body.getPosition().y);
-        sprite.setRotation(body.getAngle()*(float) (180/Math.PI));
+        gyro.step();
+        gyro2.step();
 
-		Gdx.gl.glClearColor(1, 0, 0, 1);
+
+		Gdx.gl.glClearColor(1, 1, 1, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		batch.begin();
-        sprite.draw(batch);
+
+        gyro.render(batch);
+        gyro2.render(batch);
 //        batch.draw(sprite, sprite.getX(), sprite.getY());
 
         boolean gyroAvailable = Gdx.input.isPeripheralAvailable(Input.Peripheral.Gyroscope);
@@ -99,12 +76,12 @@ public class AttackOnGyro extends ApplicationAdapter {
             float pitch_correct = pitch * -1;
             float roll_correct = roll ;
             //Make the value larger to make it more sensitive
-            pitch_correct *= 9;
-            roll_correct *= 9;
+            pitch_correct *= 15;
+            roll_correct *= 15;
             bitmapFont.draw(batch, "Pitch: " + pitchText, 400, 500);
             bitmapFont.draw(batch, "Roll: "+rollText, 700, 500);
 
-            body.setLinearVelocity(new Vector2(pitch_correct, roll_correct));
+            gyro2.move(new Vector2(pitch_correct, roll_correct));
         }
 
 
@@ -115,7 +92,6 @@ public class AttackOnGyro extends ApplicationAdapter {
 	@Override
 	public void dispose () {
 		batch.dispose();
-		img.dispose();
         world.dispose();
 	}
 }

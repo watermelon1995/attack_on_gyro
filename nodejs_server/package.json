@@ -1,0 +1,23 @@
+{
+  "name": "nodejs_server",
+  "version": "0.0.1",
+  "description": "server_side_for_aog_game",
+  "main": "app.js",
+  "dependencies": {
+    "body-parser": "^1.17.1",
+    "connect-logger": "0.0.1",
+    "crypto": "0.0.3",
+    "csprng": "^0.1.2",
+    "express": "^4.15.2",
+    "gravatar": "^1.6.0",
+    "mongoose": "^4.9.7",
+    "nodemailer": "^4.0.1",
+    "socket.io": "^1.7.3"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Watermelon1995",
+  "license": "ISC"
+}
